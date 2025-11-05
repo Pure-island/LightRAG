@@ -407,6 +407,12 @@ def parse_args() -> argparse.Namespace:
     ollama_server_infos.LIGHTRAG_NAME = args.simulated_model_name
     ollama_server_infos.LIGHTRAG_TAG = args.simulated_model_tag
 
+    # RAGAnything VLM configuration
+    args.vlm_binding = get_env_value("RAGAnything_VLM_BINDING", "openai")
+    args.vlm_model = get_env_value("RAGAnything_VLM_MODEL", "gpt-4o")
+    args.vlm_binding_host = get_env_value("RAGAnything_VLM_BINDING_HOST", "https://api.openai.com/v1")
+    args.vlm_binding_api_key = get_env_value("RAGAnything_VLM_BINDING_API_KEY", None)
+
     return args
 
 

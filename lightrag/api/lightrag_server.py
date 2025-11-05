@@ -628,15 +628,15 @@ def create_app(args):
     raganything_error_message = None
 
     try:
-        api_key = get_env_value("LLM_BINDING_API_KEY", "", str)
-        base_url = get_env_value("LLM_BINDING_HOST", "", str)
+        api_key = os.getenv("LLM_BINDING_API_KEY") or args.llm_binding_api_key
+        base_url = os.getenv("LLM_BINDING_HOST") or args.llm_binding_host
 
         # Validate required configuration
-        if not api_key:
+        if not args.llm_binding_api_key:
             raise ValueError(
                 "LLM_BINDING_API_KEY is required for RAGAnything functionality"
             )
-        if not base_url:
+        if not args.llm_binding_host:
             raise ValueError(
                 "LLM_BINDING_HOST is required for RAGAnything functionality"
             )
@@ -653,12 +653,12 @@ def create_app(args):
         # Define LLM model function
         def llm_model_func(prompt, system_prompt=None, history_messages=[], **kwargs):
             return openai_complete_if_cache(
-                "gpt-4o-mini",
+                args.llm_model,
                 prompt,
                 system_prompt=system_prompt,
                 history_messages=history_messages,
-                api_key=api_key,
-                base_url=base_url,
+                api_key=args.llm_binding_api_key,
+                base_url=args.llm_binding_host,
                 **kwargs,
             )
 
@@ -668,7 +668,7 @@ def create_app(args):
         ):
             if image_data:
                 return openai_complete_if_cache(
-                    "gpt-4o",
+                    global_args.vlm_model,
                     "",
                     system_prompt=None,
                     history_messages=[],
@@ -691,8 +691,8 @@ def create_app(args):
                         if image_data
                         else {"role": "user", "content": prompt},
                     ],
-                    api_key=api_key,
-                    base_url=base_url,
+                    api_key=global_args.vlm_binding_api_key,
+                    base_url=global_args.vlm_binding_host,
                     **kwargs,
                 )
             else:
@@ -704,9 +704,9 @@ def create_app(args):
             max_token_size=8192,
             func=lambda texts: openai_embed(
                 texts,
-                model="text-embedding-3-large",
-                api_key=api_key,
-                base_url=base_url,
+                model=args.embedding_model,
+                api_key=args.embedding_binding_api_key,
+                base_url=args.embedding_binding_host,
             ),
         )
 
