@@ -1445,6 +1445,7 @@ async def pipeline_index_files_raganything(
                 parse_method="auto",
                 scheme_name=scheme_name,
                 parser=parser,
+                device="cuda:0",
                 source=source,
             )
             if success:
@@ -2118,6 +2119,7 @@ def create_document_routes(
                     parse_method="auto",
                     scheme_name=current_framework,
                     parser=current_extractor,
+                    device="cuda:0",
                     source=current_modelSource,
                 )
 
