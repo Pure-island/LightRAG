@@ -700,7 +700,7 @@ def create_app(args):
 
         # Define embedding function
         raganything_embedding_func = EmbeddingFunc(
-            embedding_dim=3072,
+            embedding_dim=4096,
             max_token_size=8192,
             func=lambda texts: openai_embed(
                 texts,
