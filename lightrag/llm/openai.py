@@ -554,6 +554,7 @@ async def nvidia_openai_complete(
         | retry_if_exception_type(APITimeoutError)
     ),
 )
+
 async def openai_embed(
     texts: list[str],
     model: str = "text-embedding-3-small",
@@ -580,6 +581,9 @@ async def openai_embed(
         RateLimitError: If the OpenAI API rate limit is exceeded.
         APITimeoutError: If the OpenAI API request times out.
     """
+    # Clean texts to remove/replace surrogate characters and ensure valid UTF-8
+    cleaned_texts = [text.encode('utf-8', errors='replace').decode() for text in texts]
+    
     # Create the OpenAI client
     openai_async_client = create_openai_async_client(
         api_key=api_key, base_url=base_url, client_configs=client_configs
@@ -587,7 +591,7 @@ async def openai_embed(
 
     async with openai_async_client:
         response = await openai_async_client.embeddings.create(
-            model=model, input=texts, encoding_format="base64"
+            model=model, input=cleaned_texts, encoding_format="base64"
         )
         return np.array(
             [
