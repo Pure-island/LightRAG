@@ -1,12 +1,12 @@
 services:
   lightrag:
-    image: light-rag-anything:latest
+    image: lightrag-raganything:latest
     ports:
       - "9621:9621"
     volumes:
-      - ./data/rag_storage:/app/RAGENV/data/rag_storage
-      - ./data/inputs:/app/RAGENV/data/inputs
-      - ./data/tiktoken:/app/RAGENV/data/tiktoken
+      - ./RAGENV/data/rag_storage:/app/RAGENV/data/rag_storage
+      - ./RAGENV/data/inputs:/app/RAGENV/data/inputs
+      - ./RAGENV/data/tiktoken:/app/RAGENV/data/tiktoken
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
