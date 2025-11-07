@@ -1,0 +1,35 @@
+# Build stage
+FROM pytorch/pytorch:2.9.0-cuda12.8-cudnn9-runtime
+
+WORKDIR /app
+
+COPY ./LightRAG /app/LightRAG
+
+COPY ./RAGENV /app/RAGENV
+
+RUN pip install --upgrade pip
+
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+
+RUN pip install 'raganything[all]'
+
+RUN cd /app/LightRAG && \
+    pip install -e ".[api]"
+
+# Make sure scripts in .local are usable
+ENV PATH=/root/.local/bin:$PATH
+
+WORKDIR /app/RAGENV
+
+# Create necessary directories
+RUN mkdir -p /app/RAGENV/data/rag_storage /app/RAGENV/data/inputs
+
+# Docker data directories
+ENV WORKING_DIR=/app/RAGENV/data/rag_storage
+ENV INPUT_DIR=/app/RAGENV/data/inputs
+
+# Expose the default port
+EXPOSE 9621
+
+# Set entrypoint
+ENTRYPOINT ["lightrag-server"]
