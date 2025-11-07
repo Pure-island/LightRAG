@@ -1,0 +1,16 @@
+services:
+  lightrag:
+    image: light-rag-anything:latest
+    ports:
+      - "9621:9621"
+    volumes:
+      - ./data/rag_storage:/app/RAGENV/data/rag_storage
+      - ./data/inputs:/app/RAGENV/data/inputs
+      - ./data/tiktoken:/app/RAGENV/data/tiktoken
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    runtime: nvidia  # 指定 NVIDIA 运行时
+    environment:
+      - TIKTOKEN_CACHE_DIR=/app/data/tiktoken
+      - NVIDIA_VISIBLE_DEVICES=all  # 可见的 GPU 设备

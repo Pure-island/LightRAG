@@ -7,6 +7,10 @@ COPY ./LightRAG /app/LightRAG
 
 COPY ./RAGENV /app/RAGENV
 
+RUN apt-get update
+
+RUN apt-get install ffmpeg libsm6 libxext6  -y
+
 RUN pip install --upgrade pip
 
 RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
