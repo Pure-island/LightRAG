@@ -628,9 +628,6 @@ def create_app(args):
     raganything_error_message = None
 
     try:
-        api_key = os.getenv("LLM_BINDING_API_KEY") or args.llm_binding_api_key
-        base_url = os.getenv("LLM_BINDING_HOST") or args.llm_binding_host
-
         # Validate required configuration
         if not args.llm_binding_api_key:
             raise ValueError(
@@ -773,6 +770,9 @@ def create_app(args):
     # Add Ollama API routes
     ollama_api = OllamaAPI(rag, top_k=args.top_k, api_key=api_key)
     app.include_router(ollama_api.router, prefix="/api")
+    
+    # Add utility routes
+    app.include_router(create_utils_router(rag, api_key = api_key))
 
     @app.get("/")
     async def redirect_to_webui():
